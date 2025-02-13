@@ -1,8 +1,8 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// This is your Prisma schema file
+// learn more about it in the docs https//pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// Looking for ways to speed up your queries or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate https//pris.ly/cli/accelerate-init
 
 generator client {
   provider = "prisma-client-js"
@@ -11,4 +11,85 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model Users {
+  id              String @id @default(uuid())
+  age             String
+  profilePicture  String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  email           String @unique
+}
+
+
+model Model {
+  id String @id @default(uuid())
+  name String
+  type ModelTypeEnum
+  age Int
+  ethnicity EthinicityEnum
+  eyeColor EyeColorEnum
+  bald  Boolean
+  trainingImages TrainingImages[]
+  outputImages OutputImages[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model TrainingImages {
+  id String @id @default(uuid())
+  imageUrls String[]
+  modelId String
+  model Model @relation(fields: [modelId], references: [id])
+}
+
+model OutputImages {
+  id String @id @default(uuid())
+  userId String
+  imageUrl String
+  modelId String
+  model Model @relation (fields: [modelId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Packs {
+  id String @id @default(uuid())
+  name String
+  prompts PackPrompts[]
+}
+
+model PackPrompts {
+  id String @id @default(uuid())
+  prompt String
+  packId String
+  pack Packs @relation(fields: [packId], references: [id])
+}
+
+// enums
+enum ModelTypeEnum {
+  Man
+  Women
+  Other
+}
+
+enum EthinicityEnum {
+  White
+  Black
+  Hispanic
+  Asian
+  MiddleEastern
+  Indian
+  NativeAmerican
+  PacificIslander
+  Other
+}
+
+enum EyeColorEnum {
+  Brown
+  Blue
+  Green
+  Hazel
+  Gray
 }
